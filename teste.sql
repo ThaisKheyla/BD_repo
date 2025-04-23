@@ -1,5 +1,4 @@
 --  criar os databases que iremos utilizar dados_db tera os dados das tabelas e view_db a estrutura das view
-
 create database if not exists dados_db;
 
 
@@ -58,9 +57,12 @@ USAMOS A OPÇÃO DETERMINISTIC PARA NÃO SER NECESSÁRIO ALTERAR PARAMETROS DEFA
 SET GLOBAL log_bin_trust_function_creators = 1;
 
 */
+-- seleciona a base de dados... a tabela fn_estados 
+select dados_db.fn_estado('SP') as id;
+select id from dados_db 
 
 DELIMITER $$
-CREATE FUNCTION dados_db.fn_estado(fCodigo VARCHAR(20)) 
+CREATE FUNCTION fn_estado(fCodigo VARCHAR(20)) 
 RETURNS int
 DETERMINISTIC
 BEGIN
@@ -414,3 +416,89 @@ insert into dados_db.aeroporto(fkcidade, sigla, nome) values
 	(dados_db.fn_cidade('TO','GURUPI'),'SWGI','GURUPI'),
 	(dados_db.fn_cidade('TO','PALMAS'),'SBPJ','BRIGADEIRO LYSIAS RODRIGUES'),
 	(dados_db.fn_cidade('TO','ARAGUAÍNA'),'SWGN','ARAGUAÍNA');
+    
+    -- selecionando a quantidades de estados de Salvador
+    select *
+    from dados_db.cidade where nome = 'SALVADOR';
+    
+    -- selecionando os dados da tabela aeroporto
+    select * from dados_db.aeroporto;
+	
+    -- view entre estado e cidade
+    drop view if exists vw_cidade;
+
+
+    create view dados_db.vw_cidade
+    as
+    select est.id id_estado, cid.id id_cidade, est.sigla,
+		   est.nome nome_estado, cid.nome nome_cidade
+    from dados_db.estado est
+    inner join dados_db.cidade cid 
+    on cid.fkestado = est.id;
+
+    select * 
+    from vw_cidade cid
+    inner join aeroporto aer on aer.fkcidade = cid.id_cidade
+    where cid.sigla = 'SP'
+    and nome_cidade = 'CAMPINAS';
+    
+    -- ao criar a function ela não consegue retornar dados repetidos??
+    
+    show tables;
+    
+    -- Consultar dados de cidade e estado exibindo a o Id da cidade, sigla do estado e o nome da cidade
+    
+    create view dados_db.vw_teste
+    as
+    select cid.id id_cidade, est.sigla sigla_cidade, cid.nome nome_cidade
+    from dados_db.estado est
+    join dados_db.cidade cid
+    on cid.fkestado = est.id;
+    
+    
+    select * from vw_teste;
+    
+    -- Consultar dados de cidade, estado e aeroporto exibindo a sigla do estado, sigla do aeroporto
+    
+    create view dados_db.vw_dadosCidade
+    as
+    select cid.id as cidade, est.nome as nome_estado, aer.nome as aeroporto, est.sigla as estado_sigla, aer.sigla as aeroporto_sigla
+    from dados_db.estado est
+    join dados_db.cidade cid
+    join dados_db.aeroporto aer
+    on cid.fkestado = est.id;
+    select * from vw_dadosCidade;
+    
+    
+    -- Criar uma view de nome vw_cidade, com o comando do exercício no. 1
+    
+    drop view if exists vw_cidade;
+    create view vw_cidade
+    as
+    select cid.id id_cidade, est.sigla sigla_cidade, cid.nome nome_cidade
+    from dados_db.estado est
+    join dados_db.cidade cid
+    on cid.fkestado = est.id;
+    
+    select * from vw_cidade;
+    
+    -- criando uma view com as mesmas informações de uma view já existente
+    create view webada as
+	select * from vw_cidade;
+    
+    -- selecionando a view webada
+    select*from webada;
+    
+    -- testes
+    select * from vw_cidade
+    where sigla_cidade <> 'SC';
+    
+    -- terminar
+    create or replace view vw_aeroporto
+    as
+    select ae.sigla sigla_aeroporto,
+			es.sigla sigla_uf,
+            ci_nome cidade,
+            ae.nome aeroporto
+		from aeroporto ae 
+        inner join cidade ci on ci.id 
