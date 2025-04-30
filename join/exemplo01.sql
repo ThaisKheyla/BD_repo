@@ -220,3 +220,20 @@ select max(id) as maximo, min(id) minimo from aluno;
 select max(data_nasc) as maximo, min(data_nasc) minimo from aluno;
 
 select max(data_nasc) as maximo, min(data_nasc) minimo from aluno;
+
+select max(data_nasc) as maximo, min(data_nasc) minimo from aluno
+where year(data_nasc) > 2002;
+
+select TIMESTAMPDIFF(year, data_nasc, current_date())idade from aluno;
+
+select avg(TIMESTAMPDIFF(year, data_nasc, current_date()))idade from aluno;
+
+
+-- Obtenha a data de nascimento mais recente e mais antiga de uma tabela funcionario
+select max(data_nasc) as data_maxima, min(data_nasc) as data_minima from aluno;
+
+-- Selecione o maior e o menor ID da  tabela aluno.
+select max(id) as ultima_id, min(id) as primeira_id from aluno;
+
+-- Encontre a data de nascimento de alguma id
+select data_nasc as 'Nasceu...' from aluno where id = 2;
