@@ -501,4 +501,4 @@ insert into dados_db.aeroporto(fkcidade, sigla, nome) values
             ci_nome cidade,
             ae.nome aeroporto
 		from aeroporto ae 
-        inner join cidade ci on ci.id 
+        inner join cidade ci on ci.id
