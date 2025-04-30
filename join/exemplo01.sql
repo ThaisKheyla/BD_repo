@@ -196,3 +196,27 @@ inner join disciplina di on di.id = cpd.fkdisciplina
 left join aluno al on cp.fkperiodo = al.fkperiodo and cp.fkcurso = al.fkcurso
 order by 1, 2;
 
+-- Função count
+select count(*) from aluno;
+
+select * from aluno;
+
+insert into aluno(nome, fkcurso, fkperiodo, data_nasc)
+select nome, fkcurso, fkperiodo, data_nasc
+from aluno
+where id< 20;
+
+select count(distinct nome) from aluno;
+
+select distinct nome from aluno;
+
+-- Função max
+
+-- pega a primeira letra do alfabeto e verifica qual é a ultima... utiliza a tabela aschi, convertendo para binário e identifica qual é o maior 
+select max(nome), min(nome) from aluno;
+select min(id) as maximo, min(id) minimo from aluno;
+select max(id) as maximo, min(id) minimo from aluno;
+
+select max(data_nasc) as maximo, min(data_nasc) minimo from aluno;
+
+select max(data_nasc) as maximo, min(data_nasc) minimo from aluno;
